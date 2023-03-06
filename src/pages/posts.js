@@ -7,9 +7,9 @@ import PostCustom from '../common/components/post/PostCustom';
 import ReactPaginate from 'react-paginate';
 import SidebarOne from '../common/components/sidebar/SidebarOne';
 import PostCard from '../common/components/post/layout/PostCard';
+import WidgetSearch from '../common/components/sidebar/WidgetSearch';
 
 const Posts = ({ posts, error, darkLogo, lightLogo }) => {
-  console.log(posts);
   const [blogs] = useState(posts);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -40,8 +40,8 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
                 postStart={pageVisited}
               /> */}
 
-              {posts && posts.length > 0 && <PostCustom postData={posts} />}
-
+              {/* {posts && posts.length > 0 && <PostCustom postData={posts} />} */}
+              <WidgetSearch />
               {posts.slice(pageVisited || 0, show).map((data, index) => (
                 <PostCard
                   key={index}
@@ -54,7 +54,6 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
                   bgColor=""
                 />
               ))}
-              <FooterOne />
               <ReactPaginate
                 previousLabel={<i className="fas fa-arrow-left"></i>}
                 nextLabel={<i className="fas fa-arrow-right"></i>}
@@ -72,6 +71,7 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
             </div>
           </div>
         </div>
+        <FooterOne />
       </div>
     </>
   );

@@ -1,35 +1,90 @@
 import Link from "next/link";
 import Image from "next/image";
-import { removeDuplicates, slugify } from "../../utils";
+import Select from 'react-select';
+import { useState } from 'react'
+import { useEffect } from "react";
+const gender = [
+  { value: '', label: 'Select Gender' },
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'both', label: 'Both' }
+]
+const age = [
+  { value: '', label: 'Select Age' },
+  { value: '10', label: '10-20' },
+  { value: '20-30', label: '20-30' },
+  { value: '30-40', label: '30-40' },
+  { value: '30-40', label: '30-40' }
+]
+const concern = [
+  { value: '', label: 'Brain Health concern' },
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' }
+]
+const WidgetCategory = () => {
+  const [selectedGender, setSelectedGender] = useState(null);
+  const [selectedAge, setSelectedAge] = useState(null);
+  const [selectedConcern, setSelectedConcern] = useState(null);
 
-const WidgetCategory = ({ catData }) => {
-
-  const uniqueCategory = removeDuplicates(catData, "cate");
-
+  const handleChange = (selectedOption) => {
+    setSelectedGender(selectedOption);
+  };
+  const handleAgeChange = (selectedOption) => {
+    setSelectedAge(selectedOption);
+  };
+  const handleConcerChange = (selectedOption) => {
+    setSelectedConcern(selectedOption);
+  };
   return (
-    <div className="axil-single-widget widget widget_categories mb--30">
-      <ul>
-        {uniqueCategory.slice(0, 4).map((data) => (
-          <li className="cat-item" key={data.slug}>
-            <Link href={`/category/${slugify(data.cate)}`}>
-              <a className="inner">
-                <div className="thumbnail">
-                  <Image
-                    src={data.cate_img}
-                    alt={data.cate}
-                    height={50}
-                    width={50}
-                    priority={true}
-                  />
-                </div>
-                <div className="content">
-                  <h5 className="title">{data.cate}</h5>
-                </div>
-              </a>
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <div className="mb-4">
+        <label className="lead text-dark">Select Gender</label>
+        <Select
+          className="basic-single"
+          defaultValue={gender[0].label}
+          isClearable={true}
+          isSearchable={true}
+          options={gender}
+          onChange={handleChange}
+        />
+      </div>
+      <div className="mt-0">
+        <label className="lead text-dark">Select Age</label>
+        <Select
+          className="basic-single"
+          defaultValue={age[0].label}
+          isClearable={true}
+          isSearchable={true}
+          options={age}
+          onChange={handleAgeChange}
+        />
+      </div>
+
+      <div className="mt-4">
+        <label className="lead text-dark">Brain Health Concern</label>
+        <Select
+          className="basic-single"
+          defaultValue={concern[0].label}
+          isClearable={true}
+          isSearchable={true}
+          options={concern}
+          onChange={handleConcerChange}
+        />
+      </div>
+      <div className="mt-4">
+        <label className="lead text-dark">Race/ethnicity</label>
+        <input
+          type='text'
+          style={{ height: '4.5rem', borderRadius: '4px' }}
+        />
+      </div>
+      <div className="mt-4">
+        <label className="lead text-dark">Location (zip code)</label>
+        <input
+          type='text'
+          style={{ height: '4.5rem', borderRadius: '4px' }}
+        />
+      </div>
     </div>
   );
 };

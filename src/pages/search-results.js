@@ -9,24 +9,24 @@ import { HeaderMain } from '../common/elements/header/HeaderMain';
 import ReactPaginate from 'react-paginate';
 import SidebarOne from '../common/components/sidebar/SidebarOne';
 import PostCard from '../common/components/post/layout/PostCard';
+import WidgetSearch from '../common/components/sidebar/WidgetSearch';
+
 const HomeDefault = ({ darkLogo, lightLogo }) => {
   const router = useRouter();
-  const [posts, setPosts] = useState([]);
+  const word = router?.query?.word || '';
 
-  console.log(router);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [searchKeyword, setSearchKeyword] = useState(word);
   const searchClient = algoliasearch(
     `${process.env.NEXT_PUBLIC_ALGOLIA_APP_ID}`,
     `${process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}`
   );
-
   let algoliaIndex = searchClient.initIndex('development_api::post.post');
 
   const getAllHits = async () => {
     try {
       const allHits = await algoliaIndex.search(searchKeyword);
       setPosts(allHits.hits);
-      console.log(allHits);
     } catch (error) {}
   };
 
@@ -73,6 +73,7 @@ const HomeDefault = ({ darkLogo, lightLogo }) => {
                 show={pageVisited + blogsPerPage}
                 postStart={pageVisited}
               /> */}
+              <WidgetSearch word={searchKeyword} />
 
               {posts.slice(pageVisited || 0, show).map((data, index) => (
                 <PostCard
@@ -86,7 +87,6 @@ const HomeDefault = ({ darkLogo, lightLogo }) => {
                   bgColor=""
                 />
               ))}
-              <FooterOne />
               <ReactPaginate
                 previousLabel={<i className="fas fa-arrow-left"></i>}
                 nextLabel={<i className="fas fa-arrow-right"></i>}
@@ -104,6 +104,7 @@ const HomeDefault = ({ darkLogo, lightLogo }) => {
             </div>
           </div>
         </div>
+        <FooterOne />
       </div>
     </>
   );
