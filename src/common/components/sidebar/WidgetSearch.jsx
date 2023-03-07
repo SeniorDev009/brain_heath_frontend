@@ -1,12 +1,11 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Button, Stack, InputGroup, Form } from 'react-bootstrap';
 const WidgetSearch = ({ word }) => {
   const router = useRouter()
   const [searchKeyword, setSearchKeyword] = React.useState(word)
   const handleSubmit = (e) => {
     e.preventDefault()
-    searchKeyword && router.push(`search-results?word=${searchKeyword}`)
+    searchKeyword && router.push(`/search-results?word=${searchKeyword}`)
   }
 
   return (

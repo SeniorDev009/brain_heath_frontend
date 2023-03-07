@@ -1,14 +1,22 @@
-import React from 'react'
-import Link from "next/link";
-import Image from "next/image";
-import { slugify } from "../../../utils";
-const PostCard = ({ slug, image, title, category, author_name, description, bgColor }) => {
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { slugify } from '../../../utils';
+const PostCard = ({
+  slug,
+  image,
+  title,
+  categories,
+  authors,
+  description,
+  bgColor,
+}) => {
   return (
     <div
-      className={`post-list-view axil-control mt--50 ${bgColor || ""} `}
+      className={`post-list-view axil-control mt--50 ${bgColor || ''} `}
       key={slug}
     >
-      {image ?
+      {image ? (
         <div className="post-thumbnail">
           <Link href={`/post/${slug}`}>
             <a>
@@ -27,10 +35,11 @@ const PostCard = ({ slug, image, title, category, author_name, description, bgCo
             </Link>
             : ""} */}
         </div>
-        : ""}
+      ) : (
+        ''
+      )}
 
       <div className="post-content">
-
         {/* {data.postFormat === 'quote' ?
         <blockquote>
           <h4 className="title">
@@ -40,24 +49,29 @@ const PostCard = ({ slug, image, title, category, author_name, description, bgCo
           </h4>
         </blockquote> : */}
         <div className="h4">
-          <Link href={`/post/${slug}`}>
-            {title}
-          </Link>
+          <Link href={`/post/${slug}`}>{title}</Link>
         </div>
         {/* {author_name && <div className="text-secondary lead -mt-30">
           by {author_name}
         </div>} */}
         <div className="text-dark mb-3">{description}</div>
-        <Link href={`/category/${slugify(category)}`}>
-          <a className="">
-            <span className="lead">
-              <span data-text={category}>{category}</span>
-            </span>
-          </a>
-        </Link>
+        {categories && categories?.data?.map((item) => (
+          <Link
+            key={item.attributes.slug}
+            href={`/category/${slugify(item.attributes.slug)}`}
+          >
+            <a className="">
+              <span className="lead">
+                <span data-text={item.attributes.title}>
+                  {item.attributes.title}{' | '}
+                </span>
+              </span>
+            </a>
+          </Link>
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PostCard
+export default PostCard;

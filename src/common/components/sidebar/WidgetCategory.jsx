@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import Select from 'react-select';
+// import Select from 'react-select';
 import { useState } from 'react'
 import { useEffect } from "react";
 const gender = [
@@ -37,7 +37,7 @@ const WidgetCategory = () => {
   };
   return (
     <div>
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="lead text-dark">Select Gender</label>
         <Select
           className="basic-single"
@@ -84,7 +84,7 @@ const WidgetCategory = () => {
           type='text'
           style={{ height: '4.5rem', borderRadius: '4px' }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,18 +1,15 @@
-import WidgetCategory from "./WidgetCategory";
-import WidgetInstagramPost from "./WidgetInstagramPost";
-import WidgetPostList from "./WidgetPostList";
-import WidgetSearch from "./WidgetSearch";
-import WidgetSocialShare from "./WidgetSocialShare";
+import Link from "next/link";
 
-const SidebarOne = ({ dataPost }) => {
+const SidebarOne = ({ categories }) => {
   return (
     <div className="sidebar-inner">
-      <WidgetCategory catData={null} />
-      {/* <WidgetSearch /> */}
-      <br />
-      {/* <WidgetPostList postData={null} /> */}
-      {/* <WidgetSocialShare /> */}
-      {/* <WidgetInstagramPost /> */}
+      <h4>Categories</h4>
+      <hr className="text-dark bg-dark" />
+      {categories.map((item) => (
+        <div key={item.attributes.slug}>
+          {'> '}<Link href={`/category/${item.attributes.slug}`}>{item.attributes.title}</Link>
+        </div>
+      ))}
     </div>
   );
 };
