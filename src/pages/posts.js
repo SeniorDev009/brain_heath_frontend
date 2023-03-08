@@ -3,13 +3,12 @@ import axios from 'axios';
 import { HeaderMain } from '../common/elements/header/HeaderMain';
 import HeadTitle from '../common/elements/head/HeadTitle';
 import FooterOne from '../common/elements/footer/FooterOne';
-import PostCustom from '../common/components/post/PostCustom';
 import ReactPaginate from 'react-paginate';
 import SidebarOne from '../common/components/sidebar/SidebarOne';
 import PostCard from '../common/components/post/layout/PostCard';
+import WidgetSearch from '../common/components/sidebar/WidgetSearch';
 
-const Posts = ({ posts, error, darkLogo, lightLogo }) => {
-  console.log(posts);
+const Posts = ({ posts, error, darkLogo, lightLogo, categories }) => {
   const [blogs] = useState(posts);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -40,21 +39,20 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
                 postStart={pageVisited}
               /> */}
 
-              {posts && posts.length > 0 && <PostCustom postData={posts} />}
-
+              {/* {posts && posts.length > 0 && <PostCustom postData={posts} />} */}
+              <WidgetSearch />
               {posts.slice(pageVisited || 0, show).map((data, index) => (
                 <PostCard
                   key={index}
                   slug={data.attributes.slug}
                   image={data.attributes?.image}
                   title={data.attributes.title}
-                  category={data.attributes.category}
-                  author_name={data.attributes.author_name}
-                  description={data.attributes.description}
+                  categories={data.attributes?.categories}
+                  authors={data.attributes?.authors}
+                  description={data.attributes?.description}
                   bgColor=""
                 />
               ))}
-              <FooterOne />
               <ReactPaginate
                 previousLabel={<i className="fas fa-arrow-left"></i>}
                 nextLabel={<i className="fas fa-arrow-right"></i>}
@@ -68,10 +66,11 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
               />
             </div>
             <div className="col-lg-4 col-xl-4 mt_md--40 mt_sm--40">
-              <SidebarOne dataPost={posts} />
+              {categories && <SidebarOne categories={categories} />}
             </div>
           </div>
         </div>
+        <FooterOne />
       </div>
     </>
   );
@@ -79,17 +78,24 @@ const Posts = ({ posts, error, darkLogo, lightLogo }) => {
 
 export default Posts;
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
   let posts = null;
   let error = null;
+  let categories = null;
   try {
-    const { data } = await axios.get('http://localhost:1337/api/posts');
+    const { data } = await axios.get(
+      'http://localhost:1337/api/posts?populate=categories&populate=authors'
+    );
+    const { data: categoriesData } = await axios.get(
+      'http://localhost:1337/api/categories'
+    );
     posts = data.data;
+    categories = categoriesData.data;
   } catch (error) {
     console.log(error);
     error = error;
   }
   return {
-    props: { posts, error }, // will be passed to the page component as props
+    props: { posts, error, categories }, // will be passed to the page component as props
   };
 }

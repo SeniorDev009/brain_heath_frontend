@@ -1,14 +1,22 @@
-import React from 'react'
-import Link from "next/link";
-import Image from "next/image";
-import { slugify } from "../../../utils";
-const PostCard = ({ slug, image, title, category, author_name, description, bgColor }) => {
+import React from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { slugify } from '../../../utils';
+const PostCard = ({
+  slug,
+  image,
+  title,
+  categories,
+  authors,
+  description,
+  bgColor,
+}) => {
   return (
     <div
-      className={`content-block post-list-view axil-control mt--30 ${bgColor || ""} `}
+      className={`post-list-view axil-control mt--50 ${bgColor || ''} `}
       key={slug}
     >
-      {image ?
+      {image ? (
         <div className="post-thumbnail">
           <Link href={`/post/${slug}`}>
             <a>
@@ -27,20 +35,11 @@ const PostCard = ({ slug, image, title, category, author_name, description, bgCo
             </Link>
             : ""} */}
         </div>
-        : ""}
+      ) : (
+        ''
+      )}
 
       <div className="post-content">
-        <div className="post-cat">
-          <div className="post-cat-list">
-            <Link href={`/category/${slugify(category)}`}>
-              <a className="hover-flip-item-wrapper">
-                <span className="hover-flip-item">
-                  <span data-text={category}>{category}</span>
-                </span>
-              </a>
-            </Link>
-          </div>
-        </div>
         {/* {data.postFormat === 'quote' ?
         <blockquote>
           <h4 className="title">
@@ -49,45 +48,30 @@ const PostCard = ({ slug, image, title, category, author_name, description, bgCo
             </Link>
           </h4>
         </blockquote> : */}
-        <h4 className="title">
-          <Link href={`/post/${slug}`}>
-            <a>{title}</a>
-          </Link>
-        </h4>
-        <div>{description}</div>
-        <div className="post-meta-wrapper">
-          <div className="post-meta">
-            <div className="content">
-              <h6 className="post-author-name">
-                {/* <Link href={`/author/${slugify(author_name)}`}> */}
-                <a className="hover-flip-item-wrapper">
-                  <span className="hover-flip-item">
-                    <span data-text={author_name}>
-                      {author_name}
-                    </span>
-                  </span>
-                </a>
-                {/* </Link> */}
-              </h6>
-              {/* <ul className="post-meta-list">
-              <li>{data.date}</li>
-              <li>{data.read_time}</li>
-            </ul> */}
-            </div>
-          </div>
-          <ul className="social-share-transparent justify-content-end">
-            {/* {data.author_social.map((social) => (
-            <li key={social.url}>
-              <a href={social.url}>
-                <i className={social.icon} />
-              </a>
-            </li>
-          ))} */}
-          </ul>
+        <div className="h4">
+          <Link href={`/post/${slug}`}>{title}</Link>
         </div>
+        {/* {author_name && <div className="text-secondary lead -mt-30">
+          by {author_name}
+        </div>} */}
+        <div className="text-dark mb-3">{description}</div>
+        {categories && categories?.data?.map((item) => (
+          <Link
+            key={item.attributes.slug}
+            href={`/category/${slugify(item.attributes.slug)}`}
+          >
+            <a className="">
+              <span className="lead">
+                <span data-text={item.attributes.title}>
+                  {item.attributes.title}{' | '}
+                </span>
+              </span>
+            </a>
+          </Link>
+        ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default PostCard
+export default PostCard;

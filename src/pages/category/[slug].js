@@ -1,34 +1,13 @@
-import FooterOne from '../common/elements/footer/FooterOne';
-import HeadTitle from '../common/elements/head/HeadTitle';
-import algoliasearch from 'algoliasearch';
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/router';
-import { HeaderMain } from '../common/elements/header/HeaderMain';
+import { HeaderMain } from '../../common/elements/header/HeaderMain';
+import HeadTitle from '../../common/elements/head/HeadTitle';
+import FooterOne from '../../common/elements/footer/FooterOne';
 import ReactPaginate from 'react-paginate';
-import SidebarOne from '../common/components/sidebar/SidebarOne';
-import PostCard from '../common/components/post/layout/PostCard';
-import WidgetSearch from '../common/components/sidebar/WidgetSearch';
-
-const HomeDefault = ({ darkLogo, lightLogo, categories }) => {
-  const router = useRouter();
-  const word = router?.query?.word || '';
-
-  const [posts, setPosts] = useState([]);
-  const [searchKeyword, setSearchKeyword] = useState(word);
-  const searchClient = algoliasearch(
-    `${process.env.NEXT_PUBLIC_ALGOLIA_APP_ID}`,
-    `${process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY}`
-  );
-  let algoliaIndex = searchClient.initIndex('development_api::post.post');
-
-  const getAllHits = async () => {
-    try {
-      const allHits = await algoliaIndex.search(searchKeyword);
-      setPosts(allHits.hits);
-    } catch (error) {}
-  };
-
+import SidebarOne from '../../common/components/sidebar/SidebarOne';
+import PostCard from '../../common/components/post/layout/PostCard';
+import WidgetSearch from '../../common/components/sidebar/WidgetSearch';
+const CategoryPost = ({ posts, error, darkLogo, lightLogo, categories }) => {
   const [blogs] = useState(posts);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -36,24 +15,11 @@ const HomeDefault = ({ darkLogo, lightLogo, categories }) => {
   const pageVisited = pageNumber * blogsPerPage;
 
   const pageCount = Math.ceil(blogs.length / blogsPerPage);
-  const show = pageVisited + blogsPerPage;
 
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
-
-  useEffect(() => {
-    if (router.query) {
-      const word = router?.query?.word || '';
-      setSearchKeyword(word);
-    } else {
-      setSearchKeyword('');
-    }
-  }, [router.query]);
-
-  useEffect(() => {
-    getAllHits();
-  }, [searchKeyword]);
+  const show = pageVisited + blogsPerPage;
   return (
     <>
       <HeadTitle pageTitle="Brain Health" />
@@ -66,20 +32,19 @@ const HomeDefault = ({ darkLogo, lightLogo, categories }) => {
         <div className="container">
           <div className="row">
             <div className="col-lg-8 col-xl-8">
-              <WidgetSearch word={searchKeyword} />
-
+              <WidgetSearch />
               {posts &&
                 posts
-                  .slice(pageVisited || 0, show)
+                  ?.slice(pageVisited || 0, show)
                   .map((data, index) => (
                     <PostCard
                       key={index}
-                      slug={data.slug}
-                      image={data?.image}
-                      title={data.title}
-                      categories={data?.categories}
-                      authors={data?.authors || ''}
-                      description={data?.description || ''}
+                      slug={data.attributes.slug}
+                      image={data.attributes?.image}
+                      title={data.attributes.title}
+                      categories={data.attributes?.categories}
+                      authors={data.attributes?.authors}
+                      description={data.attributes?.description}
                       bgColor=""
                     />
                   ))}
@@ -106,20 +71,23 @@ const HomeDefault = ({ darkLogo, lightLogo, categories }) => {
   );
 };
 
-export default HomeDefault;
+export default CategoryPost;
 
 export async function getServerSideProps(context) {
+  const { slug } = context.query;
+  console.log(context);
   let posts = null;
   let error = null;
   let categories = null;
   try {
     const { data } = await axios.get(
-      'http://localhost:1337/api/posts?populate=categories&populate=authors'
+      `http://localhost:1337/api/categories?populate=posts.categories&populate=posts.authors&filters[$and][0][slug][$eq]=${slug}`
     );
+    console.log(data);
     const { data: categoriesData } = await axios.get(
       'http://localhost:1337/api/categories'
     );
-    posts = data.data;
+    posts = data.data[0].attributes.posts.data;
     categories = categoriesData.data;
   } catch (error) {
     console.log(error);
