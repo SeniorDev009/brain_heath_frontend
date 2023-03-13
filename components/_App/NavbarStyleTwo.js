@@ -1,11 +1,12 @@
 // Navbar Component Style File Path: public/css/pages-and-components-css/navbar.scss
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from '@/utils/ActiveLink';
+import { useState } from 'react';
 
 const NavbarStyleTwo = () => {
   const [menu, setMenu] = React.useState(true);
-
+  const [username, setUserName] = useState('');
   const toggleNavbar = () => {
     setMenu(!menu);
   };
@@ -20,7 +21,16 @@ const NavbarStyleTwo = () => {
       }
     });
   });
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      const user = JSON.parse(sessionStorage.getItem('user'));
 
+      if (user) {
+        setUserName(user.username || user.email);
+      }
+    }
+  }, []);
   const classOne = menu
     ? 'collapse navbar-collapse'
     : 'collapse navbar-collapse show';
@@ -445,9 +455,12 @@ const NavbarStyleTwo = () => {
               </div>
 
               <div className="others-options">
-                <Link href="/sign-up">
-                  <a className="default-btn">Sign Up</a>
-                </Link>
+                {!username && (
+                  <Link href="/sign-in">
+                    <a className="default-btn">Sign In</a>
+                  </Link>
+                )}
+                {/* {username && <div className="">{username}</div>} */}
               </div>
             </nav>
           </div>

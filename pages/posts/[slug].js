@@ -1,13 +1,9 @@
-import React from 'react';
-import NavbarStyleOne from '@/components/_App/NavbarStyleOne';
-import PageBannerStyle1 from '@/components/Common/PageBannerStyle1';
-import BlogSidebar from '@/components/Blog/BlogSidebar';
-import RelatedPost from '@/components/Blog/RelatedPost';
-import FooterStyleOne from '@/components/_App/FooterStyleOne';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import axios from 'axios';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -20,9 +16,25 @@ import {
   TelegramIcon,
 } from 'react-share';
 
+import NavbarStyleOne from '@/components/_App/NavbarStyleOne';
+import PageBannerStyle1 from '@/components/Common/PageBannerStyle1';
+import BlogSidebar from '@/components/Blog/BlogSidebar';
+import FooterStyleOne from '@/components/_App/FooterStyleOne';
+
 const BlogGrid = ({ post, error, categories }) => {
-  console.log(post);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
+
   const shareUrl = `http://localhost:3000/${post?.slug}` || '';
+
   return (
     <>
       <NavbarStyleOne />

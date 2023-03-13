@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import NavbarStyleTwo from '@/components/_App/NavbarStyleTwo';
 import FooterStyleOne from '@/components/_App/FooterStyleOne';
@@ -12,6 +12,16 @@ const Category = ({ posts, categories }) => {
 
   const word = router?.query?.word || '';
   const [activePost, setActivePost] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <NavbarStyleTwo />

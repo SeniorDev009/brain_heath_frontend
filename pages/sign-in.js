@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const SignIn = () => {
+  const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [emailSent, setEmailSent] = useState('');
+  const sendLink = async (e) => {
+    e.preventDefault();
+    setEmailSent(false);
+    try {
+      const res = await axios.post(
+        `http://localhost:1337/api/passwordless/send-link`,
+        {
+          email,
+        }
+      );
+      if (res.status === 200) {
+        setEmailSent(true);
+        setEmail('');
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (jwt) {
+        router.push('/');
+      }
+    }
+  }, []);
   return (
     <>
       <div className="profile-authentication-area">
@@ -12,18 +45,19 @@ const SignIn = () => {
             </a>
           </Link>
         </div>
-
+        {emailSent && <div>Email Sent Successfully</div>}
         <div className="d-table">
           <div className="d-table-cell">
             <div className="container">
               <div className="signin-form">
                 <h2>Sign In</h2>
-                <form>
+                <form onSubmit={sendLink}>
                   <div className="form-group">
                     <input
-                      type="text"
+                      type="email"
                       className="form-control"
-                      placeholder="Username or email"
+                      placeholder="Email"
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </div>
                   {/* <div className="form-group">
@@ -48,14 +82,16 @@ const SignIn = () => {
                       </Link>
                     </div>
                   </div> */}
-                  <button type="submit">Sign In</button>
+                  <button type="submit" onClick={sendLink}>
+                    Sign In
+                  </button>
 
-                  <span className="dont-account">
+                  {/* <span className="dont-account">
                     Don't have an account?{' '}
                     <Link href="/sign-up">
                       <a>Sign Up Now!</a>
                     </Link>
-                  </span>
+                  </span> */}
                 </form>
 
                 {/* <div className="sign-in-with-button">

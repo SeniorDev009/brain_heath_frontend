@@ -29,6 +29,14 @@ const IndexPage = ({ postsData, error }) => {
       fetchByCategory();
     }
   }, [category]);
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
   return (
     <>
       <NavbarStyleTwo />
