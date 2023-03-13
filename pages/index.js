@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import NavbarStyleTwo from '@/components/_App/NavbarStyleTwo';
@@ -9,15 +9,31 @@ import { useRouter } from 'next/router';
 import Features from '@/components/HomeDemo2/Features';
 import FooterStyleOne from '@/components/_App/FooterStyleOne';
 
-const IndexPage = ({ posts, error }) => {
+const IndexPage = ({ postsData, error }) => {
   const router = useRouter();
-
+  const [posts, setPosts] = useState(postsData);
+  const [category, setCategory] = useState('');
   const word = router?.query?.word || '';
+  const fetchByCategory = async () => {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:1337/api/categories?populate=posts.categories&populate=posts.authors&populate=posts.image&filters[$and][0][slug][$eq]=${category}`
+      );
+      setPosts(data?.data[0]?.attributes.posts.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if (category) {
+      fetchByCategory();
+    }
+  }, [category]);
   return (
     <>
       <NavbarStyleTwo />
       <FreeTrialStyle2 heading="Welcome to Dermi Club" word={word} />
-      <Features />
+      <Features setCategory={setCategory} />
       {error && <div>Internal Server Error</div>}
 
       {posts && <BlogPost posts={posts} />}
@@ -31,18 +47,18 @@ const IndexPage = ({ posts, error }) => {
 export default IndexPage;
 
 export async function getServerSideProps() {
-  let posts = null;
+  let postsData = null;
   let error = null;
   try {
     const { data } = await axios.get(
       'http://localhost:1337/api/posts?populate=categories&populate=authors&populate=image'
     );
-    posts = data.data;
+    postsData = data.data;
   } catch (error) {
     console.log(error);
     error = error;
   }
   return {
-    props: { posts, error }, // will be passed to the page component as props
+    props: { postsData, error }, // will be passed to the page component as props
   };
 }

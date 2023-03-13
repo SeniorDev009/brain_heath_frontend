@@ -29,7 +29,6 @@ export default Category;
 
 export async function getServerSideProps(context) {
   const { slug } = context.query;
-  console.log(context);
   let posts = null;
   let error = null;
   let categories = null;
