@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
+
 import NavbarStyleTwo from '@/components/_App/NavbarStyleTwo';
 import PageBannerStyle1 from '@/components/Common/PageBannerStyle1';
 import BlogSidebar from '@/components/Blog/BlogSidebar';
@@ -7,13 +9,21 @@ import SearchWidget from '@/components/Blog/SearchWidget';
 import PostContent from '@/components/Blog/PostContent';
 import FooterStyleOne from '@/components/_App/FooterStyleOne';
 
-import { useRouter } from 'next/router';
-
 const Category = ({ posts, categories }) => {
   const router = useRouter();
 
   const word = router?.query?.word || '';
   const [activePost, setActivePost] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <NavbarStyleTwo />

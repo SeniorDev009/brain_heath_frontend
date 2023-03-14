@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
+import algoliasearch from 'algoliasearch';
+
 import NavbarStyleTwo from '@/components/_App/NavbarStyleTwo';
 import PageBannerStyle1 from '@/components/Common/PageBannerStyle1';
 import BlogSidebar from '@/components/Blog/BlogSidebar';
 import FooterStyleOne from '@/components/_App/FooterStyleOne';
-import { useRouter } from 'next/router';
 import SearchWidget from '@/components/Blog/SearchWidget';
-import algoliasearch from 'algoliasearch';
 import PostContent from '@/components/Blog/PostContent';
 
 const SearchPosts = ({ error, categories }) => {
@@ -54,7 +55,16 @@ const SearchPosts = ({ error, categories }) => {
   useEffect(() => {
     getAllHits();
   }, [searchKeyword]);
-  console.log(posts[0]);
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
+
   return (
     <React.Fragment>
       <NavbarStyleTwo />

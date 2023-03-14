@@ -1,13 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import axios from 'axios';
+import moment from 'moment';
+import { useRouter } from 'next/router';
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  HatenaShareButton,
+  TelegramShareButton,
+  TwitterShareButton,
+  TwitterIcon,
+  FacebookIcon,
+  EmailIcon,
+  TelegramIcon,
+} from 'react-share';
+
 import NavbarStyleOne from '@/components/_App/NavbarStyleOne';
 import PageBannerStyle1 from '@/components/Common/PageBannerStyle1';
 import BlogSidebar from '@/components/Blog/BlogSidebar';
-import RelatedPost from '@/components/Blog/RelatedPost';
 import FooterStyleOne from '@/components/_App/FooterStyleOne';
-import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 
-const BlogGrid = () => {
+const BlogGrid = ({ post, error, categories }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      const jwt = sessionStorage.getItem('jwt');
+      if (!jwt) {
+        router.push('/sign-in');
+      }
+    }
+  }, []);
+
+  const shareUrl = `http://localhost:3000/${post?.slug}` || '';
+
   return (
     <>
       <NavbarStyleOne />
@@ -18,17 +45,32 @@ const BlogGrid = () => {
         homePageText="Home"
         activePageText="Blog Grid"
       />
-
+      {error && <div>Internal Server error</div>}
       <div className="blog-details-area ptb-100">
         <div className="container">
           <div className="row">
             <div className="col-lg-8 col-md-12">
               <div className="blog-details-desc">
                 <div className="article-image">
-                  <Link href="/blog-grid">
-                    <a className="tag">Branding</a>
+                  <Link
+                    href={`/posts/category/${post?.categories.data[0].attributes.slug}`}
+                  >
+                    <a className="tag">
+                      {post?.categories?.data[0]?.attributes.title}
+                    </a>
                   </Link>
-                  <img src="/images/blog/blog1.jpg" alt="blog-details" />
+                  <Link href={`/posts/${post?.slug}`}>
+                    <a className="d-block">
+                      {post?.image?.data?.attributes?.url ? (
+                        <img
+                          src={`http://localhost:1337${post?.image?.data?.attributes?.url}`}
+                          alt="blog"
+                        />
+                      ) : (
+                        <img src="/images/blog/blog1.jpg" alt="blog" />
+                      )}
+                    </a>
+                  </Link>
                 </div>
 
                 <div className="article-content">
@@ -36,200 +78,72 @@ const BlogGrid = () => {
                     <ul>
                       <li>
                         <i className="ri-calendar-2-line"></i>
-                        March 14, 2021
+                        {moment(post?.publishedAt).format('DD-MM-YYYY')}
                       </li>
-                      <li>
+                      {/* <li>
                         <i className="ri-message-2-line"></i>
                         <Link href="/blog-details">
                           <a>(4) Comments</a>
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
 
-                  <h4>
-                    Branding involves developing strategy to create a pin point
-                    of differentiation the marketing
-                  </h4>
-                  <p>
-                    Quuntur magni dolores eos qui ratione voluptatem sequi
-                    nesciunt. Neque porro quia non numquam eius modi tempora
-                    incidunt ut labore et dolore magnam dolor sit amet,
-                    consectetur adipisicing.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur{' '}
-                    <strong>adipisicing</strong> elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad
-                    minim veniam, quis nostrud exercitation ullamco laboris nisi
-                    ut aliquip ex ea <a href="/blog-details">commodo</a>{' '}
-                    consequat. Duis aute irure dolor in reprehenderit in sed
-                    quia non numquam eius modi tempora incidunt ut labore et
-                    dolore magnam aliquam quaerat voluptatem.
-                  </p>
-                  <ol>
-                    <li>
-                      Nunc, mauris ut in vestibulum. Consectetur phasellus
-                      ultrices fusce nibh justo, venenatis, amet. Lectus quam in{' '}
-                    </li>
-                    <li>
-                      Most of the designer are very creative to do something ,
-                      mauris ut in vestibulum. Consectetur phasellus ultrices
-                      fusce nibh justo, venenatis, amet. Lectus quam in lobortis{' '}
-                    </li>
-                    <li>
-                      There are two thing is very important in Consectetur
-                      phasellus ultrices fusce nibh justo, venenatis, amet.
-                      Lectus quam.
-                    </li>
-                    <li>
-                      Web design and development very creative to do something ,
-                      mauris ut in vestibulum. Consectetur phasellus ultrices
-                      fusce nibh venenatis, amet to all design and development.
-                    </li>
-                  </ol>
-                  <p>
-                    Quuntur magni dolores eos qui ratione voluptatem sequi
-                    nesciunt. Neque porro quia non numquam eius modi tempora
-                    incidunt ut labore et dolore magnam dolor sit amet,
-                    consectetur adipisicing.
-                  </p>
-
-                  <ul className="wp-block-gallery columns-3">
-                    <li className="blocks-gallery-item">
-                      <figure>
-                        <img src="/images/blog/blog5.jpg" alt="image" />
-                      </figure>
-                    </li>
-                    <li className="blocks-gallery-item">
-                      <figure>
-                        <img src="/images/blog/blog6.jpg" alt="image" />
-                      </figure>
-                    </li>
-                    <li className="blocks-gallery-item">
-                      <figure>
-                        <img src="/images/blog/blog7.jpg" alt="image" />
-                      </figure>
-                    </li>
-                  </ul>
-
-                  <h4>Four major elements that we offer:</h4>
-                  <p>
-                    Quuntur magni dolores eos qui ratione voluptatem sequi
-                    nesciunt. Neque porro quia non numquam eius modi tempora
-                    incidunt ut labore et dolore magnam dolor sit amet,
-                    consectetur adipisicing.
-                  </p>
-
-                  <ul>
-                    <li>Scientific skills for getting a better result</li>
-                    <li>Communication skills to getting in touch</li>
-                    <li>A career overview opportunity available</li>
-                    <li>A good work environment for work</li>
-                  </ul>
-
-                  <h4>Setting the mood with incense</h4>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in sed quia non
-                    numquam eius modi tempora incidunt ut labore et dolore
-                    magnam aliquam quaerat voluptatem.
-                  </p>
-
-                  <blockquote className="wp-block-quote">
-                    <p>
-                      It is a long established fact that a reader will be
-                      distracted by the readable content of a page when looking
-                      at its layout.
-                    </p>
-                    <cite>Tom Cruise</cite>
-                  </blockquote>
-
-                  <h4>The rise of marketing and why you need it</h4>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                    sed do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur{' '}
-                    <strong>adipisicing</strong> elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad
-                    minim veniam, quis nostrud exercitation ullamco laboris nisi
-                    ut aliquip ex ea <a href="/blog-details">commodo</a>{' '}
-                    consequat. Duis aute irure dolor in reprehenderit in sed
-                    quia non numquam eius modi tempora incidunt ut labore et
-                    dolore magnam aliquam quaerat voluptatem.
-                  </p>
+                  <h4>{post.title}</h4>
+                  <ReactMarkdown children={post.content} />
                 </div>
-
                 <div className="article-footer">
-                  <div className="post-author-meta">
-                    <div className="d-flex align-items-center">
-                      <img src="/images/user/user6.jpg" alt="user" />
-                      <div className="title">
-                        <span className="name">
-                          By{' '}
-                          <Link href="/blog-grid">
-                            <a>EnvyTheme</a>
-                          </Link>
-                        </span>
-                        <span className="date">March 17, 2021</span>
+                  {post?.authors?.data?.length > 0 && (
+                    <div className="post-author-meta">
+                      <div className="d-flex align-items-center">
+                        <img src="/images/user/user6.jpg" alt="user" />
+                        <div className="title">
+                          <span className="name">
+                            By{' '}
+                            <Link href="/blog-grid">
+                              <a>
+                                {post?.authors?.data[0].attributes.author_name}
+                              </a>
+                            </Link>
+                          </span>
+                          <span className="date">March 17, 2021</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   <div className="article-share">
                     <ul className="social">
                       <li>
                         <span>Share:</span>
                       </li>
                       <li>
-                        <a
-                          href="https://www.facebook.com/"
-                          className="facebook"
-                          target="_blank"
-                        >
-                          <i className="ri-facebook-fill"></i>
-                        </a>
+                        <FacebookShareButton url={shareUrl}>
+                          <FacebookIcon size={32} round={true} />
+                        </FacebookShareButton>
                       </li>
                       <li>
-                        <a
-                          href="https://www.linkedin.com/"
-                          className="twitter"
-                          target="_blank"
-                        >
-                          <i className="ri-linkedin-fill"></i>
-                        </a>
+                        <EmailShareButton url={shareUrl}>
+                          <EmailIcon size={32} round={true} />
+                        </EmailShareButton>
                       </li>
                       <li>
-                        <a
-                          href="https://twitter.com/"
-                          className="linkedin"
-                          target="_blank"
-                        >
-                          <i className="ri-twitter-fill"></i>
-                        </a>
+                        <TwitterShareButton url={shareUrl}>
+                          <TwitterIcon size={32} round={true} />
+                        </TwitterShareButton>
                       </li>
                       <li>
-                        <a
-                          href="https://www.instagram.com/"
-                          className="instagram"
-                          target="_blank"
-                        >
-                          <i className="ri-instagram-line"></i>
-                        </a>
+                        <TelegramShareButton url={shareUrl}>
+                          <TelegramIcon size={32} round={true} />
+                        </TelegramShareButton>
                       </li>
                     </ul>
                   </div>
                 </div>
 
                 {/* Related Blog Post */}
-                <RelatedPost />
+                {/* <RelatedPost /> */}
 
-                <div className="comments-area">
+                {/* <div className="comments-area">
                   <h3 className="comments-title">2 Comments:</h3>
 
                   <ol className="comment-list">
@@ -473,13 +387,13 @@ const BlogGrid = () => {
                       </p>
                     </form>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
 
             <div className="col-lg-4 col-md-12">
               <div className="right-sidebar">
-                <BlogSidebar />
+                <BlogSidebar categories={categories} showPopularPosts={false} />
               </div>
             </div>
           </div>
@@ -492,3 +406,26 @@ const BlogGrid = () => {
 };
 
 export default BlogGrid;
+
+export async function getServerSideProps(context) {
+  const { slug } = context.query;
+  let post = null;
+  let error = null;
+  let categories = null;
+  try {
+    const { data } = await axios.get(
+      `http://localhost:1337/api/posts?populate=categories&populate=authors&populate=image&filters[$and][0][slug][$eq]=${slug}`
+    );
+    const { data: categoriesData } = await axios.get(
+      'http://localhost:1337/api/categories'
+    );
+    post = data?.data[0]?.attributes;
+    categories = categoriesData.data;
+  } catch (error) {
+    console.log(error);
+    error = error;
+  }
+  return {
+    props: { post, error, categories }, // will be passed to the page component as props
+  };
+}
