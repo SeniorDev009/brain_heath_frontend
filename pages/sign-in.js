@@ -13,7 +13,7 @@ const SignIn = () => {
     setEmailSent(false);
     try {
       const res = await axios.post(
-        `http://localhost:1337/api/passwordless/send-link`,
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/passwordless/send-link`,
         {
           email,
         }

@@ -130,10 +130,10 @@ export async function getServerSideProps(context) {
   let categories = null;
   try {
     const { data } = await axios.get(
-      'http://localhost:1337/api/posts?populate=categories&populate=authors'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/posts?populate=categories&populate=authors`
     );
     const { data: categoriesData } = await axios.get(
-      'http://localhost:1337/api/categories'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/categories`
     );
     posts = data.data;
     categories = categoriesData.data;

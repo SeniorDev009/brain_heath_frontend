@@ -10,7 +10,7 @@ const PostContent = ({ data, setActivePost }) => {
       <div className="image">
         {/* <Link href={`/posts/${data.slug}`}>
           {data?.image?.url ? (
-            <img src={`http://localhost:1337${data?.image?.url}`} alt="blog" />
+            <img src={`${process.env.NEXT_PUBLIC_API_KEY}${data?.image?.url}`} alt="blog" />
           ) : (
             <img src="/images/blog/blog1.jpg" alt="blog" />
           )}

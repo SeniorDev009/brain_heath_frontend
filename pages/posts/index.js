@@ -92,10 +92,10 @@ export async function getServerSideProps() {
   let categories = null;
   try {
     const { data } = await axios.get(
-      'http://localhost:1337/api/posts?populate=categories&populate=authors&populate=image'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/posts?populate=categories&populate=authors&populate=image`
     );
     const { data: categoriesData } = await axios.get(
-      'http://localhost:1337/api/categories'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/categories`
     );
     posts = data.data;
     categories = categoriesData.data;

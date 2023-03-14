@@ -17,7 +17,7 @@ const BlogPost = ({ posts }) => {
                         <a className="d-block">
                           {post?.attributes?.image?.data?.attributes?.url ? (
                             <img
-                              src={`http://localhost:1337${post?.attributes?.image?.data?.attributes?.url}`}
+                              src={`${process.env.NEXT_PUBLIC_API_KEY}${post?.attributes?.image?.data?.attributes?.url}`}
                               alt="blog"
                             />
                           ) : (

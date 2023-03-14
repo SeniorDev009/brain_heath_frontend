@@ -17,7 +17,7 @@ const IndexPage = ({ postsData, error }) => {
   const fetchByCategory = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:1337/api/categories?populate=posts.categories&populate=posts.authors&populate=posts.image&filters[$and][0][slug][$eq]=${category}`
+        `${process.env.NEXT_PUBLIC_API_KEY}/api/categories?populate=posts.categories&populate=posts.authors&populate=posts.image&filters[$and][0][slug][$eq]=${category}`
       );
       setPosts(data?.data[0]?.attributes.posts.data);
     } catch (error) {
@@ -59,7 +59,7 @@ export async function getServerSideProps() {
   let error = null;
   try {
     const { data } = await axios.get(
-      'http://localhost:1337/api/posts?populate=categories&populate=authors&populate=image'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/posts?populate=categories&populate=authors&populate=image`
     );
     postsData = data.data;
   } catch (error) {

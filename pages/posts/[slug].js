@@ -63,7 +63,7 @@ const BlogGrid = ({ post, error, categories }) => {
                     <a className="d-block">
                       {post?.image?.data?.attributes?.url ? (
                         <img
-                          src={`http://localhost:1337${post?.image?.data?.attributes?.url}`}
+                          src={`${process.env.NEXT_PUBLIC_API_KEY}${post?.image?.data?.attributes?.url}`}
                           alt="blog"
                         />
                       ) : (
@@ -414,10 +414,10 @@ export async function getServerSideProps(context) {
   let categories = null;
   try {
     const { data } = await axios.get(
-      `http://localhost:1337/api/posts?populate=categories&populate=authors&populate=image&filters[$and][0][slug][$eq]=${slug}`
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/posts?populate=categories&populate=authors&populate=image&filters[$and][0][slug][$eq]=${slug}`
     );
     const { data: categoriesData } = await axios.get(
-      'http://localhost:1337/api/categories'
+      `${process.env.NEXT_PUBLIC_API_KEY}/api/categories`
     );
     post = data?.data[0]?.attributes;
     categories = categoriesData.data;
